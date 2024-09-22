@@ -18,63 +18,63 @@ section .text
 ; Принимает код возврата и завершает текущий процесс
 exit: 
 	sub 	rsp, 8
-    mov 	rax, 60
-    syscall
-    xor 	rax, rax
+	mov 	rax, 60
+	syscall
+	xor 	rax, rax
 	add 	rsp, 8
-    ret 
+	ret 
 
 ; Принимает указатель на нуль-терминированную строку, возвращает её длину
 string_length:
 	sub 	rsp, 8
-    mov 	rcx, rdi
+	mov 	rcx, rdi
 string_cnt_loop:
-    mov 	al, [rcx]
-    cmp 	al, 0
-    jz 		string_cnt_ret
-    inc 	rcx
-    jmp 	string_cnt_loop
+	mov 	al, [rcx]
+	cmp 	al, 0
+	jz 		string_cnt_ret
+	inc 	rcx
+	jmp 	string_cnt_loop
 string_cnt_ret:
-    mov 	rax, rcx
-    sub 	rax, rdi
+	mov 	rax, rcx
+	sub 	rax, rdi
 	add 	rsp, 8
-    ret
+	ret
 
 ; Принимает указатель на нуль-терминированную строку, выводит её в stdout
 print_string:
-    push 	rdi
-    call 	string_length
-    mov 	rdx, rax
-    pop 	rsi
-    mov 	rdi, 1
-    mov 	rax, 1
-    syscall
-    xor 	rax, rax
-    ret
+	push 	rdi
+	call 	string_length
+	mov 	rdx, rax
+	pop 	rsi
+	mov 	rdi, 1
+	mov 	rax, 1
+	syscall
+	xor 	rax, rax
+	ret
 
 ; Принимает код символа и выводит его в stdout
 print_char:
-    push 	rdi
-    mov 	rdi, rsp
-    call 	print_string
-    add 	rsp, 8
-    xor 	rax, rax
-    ret
+	push 	rdi
+	mov 	rdi, rsp
+	call 	print_string
+	add 	rsp, 8
+	xor 	rax, rax
+	ret
 
 ; Переводит строку (выводит символ с кодом 0xA)
 print_newline:
 	sub 	rsp, 8
-    mov 	rdi, 0xA
-    call 	print_char 
+	mov 	rdi, 0xA
+	call 	print_char 
 	add 	rsp, 8
-    ret
+	ret
 
 ; Выводит беззнаковое 8-байтовое число в десятичном формате 
 ; Совет: выделите место в стеке и храните там результаты деления
 ; Не забудьте перевести цифры в их ASCII коды.
 print_uint:
 	push 	rbx
-    sub 	rsp, 32
+	sub		rsp, 32
 	mov 	rcx, rsp
 	add 	rcx, 31
 	xor 	rax, rax
@@ -82,7 +82,7 @@ print_uint:
 	mov 	rax, rdi
 	mov 	rbx, 10
 div_loop:
-    xor 	rdx,rdx
+	xor 	rdx,rdx
 	div 	rbx
 	dec 	rcx
 	add 	dl, 0x30
@@ -94,7 +94,7 @@ div_loop:
 	add 	rsp, 32
 	xor 	rax, rax
 	pop		rbx
-    ret
+	ret
 
 ; Выводит знаковое 8-байтовое число в десятичном формате 
 print_int:
@@ -113,8 +113,8 @@ int_neg:
 	sub 	rsp, 8
 	call 	print_uint
 	add 	rsp, 8
-    xor 	rax, rax
-    ret
+	xor 	rax, rax
+	ret
 
 ; Принимает два указателя на нуль-терминированные строки, возвращает 1 если они равны, 0 иначе
 string_equals:
@@ -129,16 +129,16 @@ string_equals:
 	jmp string_equals
 string_equ:
 	mov		rax, 1
-    ret
+	ret
 string_nequ:	
-    xor 	rax, rax
-    ret
+	xor 	rax, rax
+	ret
 
 ; Читает один символ из stdin и возвращает его. Возвращает 0 если достигнут конец потока
 read_char:
 	sub 	rsp, 8
 	mov 	rax, 0
-    mov 	rdi, 0
+	mov 	rdi, 0
 	mov 	rsi, rsp
 	add		rsi, 7
 	mov 	rdx, 1
@@ -151,7 +151,7 @@ read_char:
 	mov 	al, [rsi]
 read_char_end:
 	add 	rsp, 8
-    ret  
+	ret  
 
 ; Принимает: адрес начала буфера, размер буфера
 ; Читает в буфер слово из stdin, пропуская пробельные символы в начале, .
@@ -199,7 +199,7 @@ read_ending:
 	mov 	rax, rdi
 	add		rsp, 8
 	pop		rbx
-    ret
+	ret
 read_badending:
 	add		rsp, 8
 	pop 	rbx
@@ -230,7 +230,7 @@ parse_loop:
 	jmp 	parse_loop
 parse_end:
 	mov 	rdx, r8
-    ret
+	ret
 
 
 
@@ -252,10 +252,10 @@ parse_int:
 parse_neg:
 	inc 	rdi
 	call	parse_uint
-    neg 	rax
+	neg 	rax
 	inc 	rdx
 	add 	rsp, 8
-    ret 
+	ret 
 
 ; Принимает указатель на строку, указатель на буфер и длину буфера
 ; Копирует строку в буфер
@@ -268,11 +268,10 @@ copy_loop:
 	jge 	copy_fail	
 	mov 	cl, [rdi+rax]
 	mov 	[rsi+rax], cl
-    inc 	rax
+	inc 	rax
 	cmp 	cl, 0
 	je 		copy_end
 	jmp		copy_loop
-    ret
 copy_end:
 	ret
 copy_fail:

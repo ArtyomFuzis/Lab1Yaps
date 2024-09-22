@@ -3,3 +3,4 @@
 /print_*
 /string_*
 /report.xml
+*.pyc
